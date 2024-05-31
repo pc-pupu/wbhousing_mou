@@ -12,6 +12,10 @@ if($isVal){
 	$common_data = $output[1];
 	$applicant_data = $output[3];
    //echo "<pre>";print_r($output);exit;
+
+  //debolina start
+  $status_description=$output[4]; 
+  //debolina end
 ?>
 <div class="table-bottom">
 	
@@ -43,7 +47,17 @@ if($isVal){
     </tr>
     <tr>
       <th style="background-color:#a1baef">Application Status</th>
-      <td><?php echo ($common_data->status == 'allotted') ? 'Allotted Offer' : $common_data->status;?></td>
+      <!-- <td><?php //echo ($common_data->status == 'allotted') ? 'Allotted Offer' : $common_data->status;?></td> -->
+      <!-- debolina start-->
+      <td>
+        <?php if(isset($status_description)){
+        echo $status_description;
+        }
+        else{
+          echo 'NA'; 
+        }?>
+      </td>
+      <!-- debolina end-->
     </tr>
     <!-- <tr>
       <th style="background-color:#a1baef">Date of Action</th>

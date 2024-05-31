@@ -33,6 +33,9 @@
                     $next_status_app = 'housing_official_approved';
                     $next_status_rej = 'housing_official_reject';
                 }
+            
+
+
 
             ?>
         
@@ -42,6 +45,35 @@
             
         </ul> 
     </li>
+
+    <!---- 30-05-2024 start-------->
+    <?php if($user_role == 10 || $user_role == 11){?> 
+    <li class="first leaf" style="border-bottom: none;"> <a style="cursor:pointer;" class="toggle-menu <?php echo $path == 'view_application_list/%/%' ?'active':($path == 'view_application/%/%' ?'active':($path == 'application_detail/%' ?'active':''));?>"> Alloted Application List <span style="margin-left:10px;color:#00AEEF;"></span></a>
+    
+        <ul class="menu" style="display:<?php echo $path == 'view_application_list/%/%' ?'block':($path == 'view_application/%/%' ?'block':($path == 'application_detail/%' ?'block':'none'));?>;">
+
+            <?php
+                if($user_role == 11){//ddo
+                    $new_status = 'applicant_acceptance';
+                    $next_status_app = 'ddo_verified_2';
+                    $next_status_rej = 'ddo_reject_2';
+
+                }else if($user_role == 10){// housing-supervisor
+                    $new_status = 'ddo_verified_2';
+                    $next_status_app = 'housing_sup_approved_2';
+                    $next_status_rej = 'housing_sup_reject_2';
+                }
+            
+            ?>
+        
+            <li class="first leaf"> <?php echo l('New Application <span style="margin-left:10px;"></span>','view_application_list/'.encrypt_url($new_status).'/'.encrypt_url('new-apply').'/'.'action-list',array('html' => TRUE)) ?> </li>
+            <li class="leaf"> <?php echo l('Verified List <span style="margin-left:10px;"></span>','view_application_list/'.encrypt_url($next_status_app).'/'.encrypt_url('new-apply').'/'.'verified-list',array('html' => TRUE)) ?> </li>
+            <li class="last leaf"> <?php echo l('Rejected List <span style="margin-left:10px;"></span>','view_application_list/'.encrypt_url($next_status_rej).'/'.encrypt_url('new-apply').'/'.'reject-list',array('html' => TRUE)) ?> </li>
+            
+        </ul> 
+    </li>
+    <?php } ?>
+    <!---------end----------->
   
     <?php /*?><li class="first leaf" style="border-bottom: none;"> <a style="cursor:pointer;" class="toggle-menu <?php echo $path == 'view_waiting_list' ? 'active' : ($path == 'vacany_list' ? 'active' : ($path == 'allotment_list' ? 'active' : ($path == 'rhe_allotment' ? 'active' : ($path == 'flat_type_waiting_list' ? 'active' : ''))));?>"> RHE Allotment </a>
     

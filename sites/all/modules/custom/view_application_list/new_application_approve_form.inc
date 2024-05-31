@@ -1,11 +1,14 @@
 <?php
+	//debolina start
 	function application_form_upload1($form, &$form_state, $online_application_id, $status_new = '', $status = '', $entity = '') {
+
 		global $user,$user_role;
 		$online_application_id = decrypt_url($online_application_id);
 		$status_new = decrypt_url($status_new);
 		$status = decrypt_url($status);
 		$entity = decrypt_url($entity);
 		//echo $online_application_id,$status_new,$status,$entity;die;
+		//print_r($user);die;
 		$application_form_arr = array(
 			'status' => $status_new,
 			'date_of_verified' => date('Y-m-d')
@@ -16,7 +19,7 @@
 		$query = db_select('housing_allotment_status_master', 'hasm');
 		$query->addField('hasm', 'status_id');
 		$query->addField('hasm', 'short_code');
-		$query->condition('hasm.short_code',$status,'=');
+		$query->condition('hasm.short_code',$status_new,'=');
 		$result = $query->execute();  
 		$data = $result->fetchObject();
 		
@@ -49,6 +52,7 @@
 		drupal_set_message($app_type.' Application Approved successfully.');
 		drupal_goto('view_application/'.$status_new.'/'.$entity);
 	}
+	//debolina end
 	function application_form_upload($form, &$form_state, $online_application_id, $status_new = '', $status = '', $entity = '') {
 		
 		global $user_role;

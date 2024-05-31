@@ -1,4 +1,6 @@
 <?php
+
+//this page is for applicant login
 	function application_list_menu() {
 	
 		$items['application-list'] = array(
@@ -15,6 +17,7 @@
 		  //'file' => 'view_application_page.inc',
 		  'access arguments' => array('administer View Applicant Application'),
 		);
+
 		
 		$items['application-pdf-gen/%/%'] = array(
 		  'title' => 'View Application',	
@@ -41,9 +44,16 @@
 		global $user;
 		$app_id = decrypt_url($app_id);
 		if(is_numeric($app_id) && $app_id > 0) {
+			
 			$app_details = fetch_application_detail($app_id);
 			$rowCountData = $app_details->rowCount();
 			$app_data = $app_details->fetchObject();
+
+			//debolina start
+			$current_application_status_description=fetch_application_status_description($app_data->status);	
+
+			//debolina end
+			
 			$output = array();
 			
 			if($app_data->uid == $user->uid) {
@@ -55,6 +65,11 @@
 					$output[] = $app_data;
 					$output[] = check_application_entity(0,$app_id);
 					$output[] = applicant_personal_info()->fetchObject();
+					
+					//debolina start
+					$output[] = $current_application_status_description;
+					//print_r($output);die;
+					//debolina end
 				}
 			}
 		}
@@ -174,6 +189,7 @@
 
 	
 	function fetch_application_detail($online_application_id = 0){
+
 		global $user;
 		$query = db_select('housing_applicant_official_detail', 'haod');
 		$query->innerJoin('housing_online_application', 'hoa',
@@ -258,5 +274,8 @@
 		//echo $query; die();
 		return $query->execute();
 	}
+	
+
+	
 	
 

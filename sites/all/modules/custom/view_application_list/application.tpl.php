@@ -1,5 +1,5 @@
 <?php 
-//echo "<pre>";print_r($output);die;
+
 //echo "<pre>";print_r($output['page_status']);die;
 if(isset($output['page_status'])){
 	$page_status=$output['page_status'];
@@ -15,10 +15,10 @@ $options1['html'] = TRUE;
 if($status == 'applied'){
 	drupal_set_title('New Application List');
 }
-else if($status == 'verified'){
+else if($status == 'ddo_verified_1'||$status == 'ddo_verified_2'||$status=='housing_sup_approved_1'||$status=='housing_official_approved'||$status=='housing_sup_approved_2'){
 	drupal_set_title('Verified Application List');
 }
-else if($status == 'reject'){
+else if($status == 'ddo_reject_1'||$status == 'ddo_reject_2'||$status=='housing_sup_reject_1'||$status=='housing_official_rejected'||$status=='housing_sup_reject_2'){
 	drupal_set_title('Rejected Application List');
 }
 ?>

@@ -1,7 +1,7 @@
 <?php
 
 function view_app_page($status='', $entity = '',$page_status='') {
-	//echo $page_status;
+	//echo $page_status;die;
 	global $user_role;
 	$status = decrypt_url($status);
 	$entity = decrypt_url($entity);
@@ -13,16 +13,38 @@ function view_app_page($status='', $entity = '',$page_status='') {
 	
 	if($status !== '' && $entity !== '' && preg_match("/^[a-zA-Z0-9\-\_]*$/",$status) && preg_match("/^[a-zA-Z0-9\-\_]*$/",$entity)){
 		if($status == 'applied'){
-			$statusMsg = 'New ';
+			$statusMsg = 'Submitted ';
 		}else if($status == 'ddo_verified_1'){
-			$statusMsg = 'DDO Verified ';
+			$statusMsg = 'DDO (Level-1) Verified ';
+		}else if($status == 'ddo_reject_1'){
+			$statusMsg = 'DDO (Level-1) Rejected ';
+		}else if($status == 'housing_sup_approved_1'){
+			$statusMsg = 'Housing Supervisor(Level-1) Verified ';
+		}else if($status == 'housing_sup_reject_1'){
+			$statusMsg = 'Housing Supervisor(Level-1) Rejected ';
+		}else if($status == 'housing_official_approved'){
+			$statusMsg = 'Housing Official Verified ';
+		}else if($status == 'housing_official_rejected'){
+			$statusMsg = 'Housing Official Rejected ';
+		}else if($status == 'ddo_verified_2'){
+			$statusMsg = 'DDO (Level-2) Verified ';
+		}else if($status == 'ddo_reject_2'){
+			$statusMsg = 'DDO (Level-2) Rejected ';
+		}else if($status == 'housing_sup_approved_2'){
+			$statusMsg = 'Housing Supervisor(Level-2) Verified ';
+		}else if($status == 'housing_sup_reject_2'){
+			$statusMsg = 'Housing Supervisor(Level-2) Rejected ';
+		}else if($status == 'applicant_acceptance'){
+			$statusMsg = 'Alloted ';
 		}
-		else if($status == 'verified'){
+
+
+		/*else if($status == 'verified'){
 			$statusMsg = 'Verified ';
 		}
 		else if($status == 'reject'){
 			$statusMsg = 'Rejected ';
-		}
+		}*/
 		
 		if($entity == 'new-apply'){
 			$entityMsg = 'New Allotment ';
@@ -54,7 +76,12 @@ function view_app_page($status='', $entity = '',$page_status='') {
 			
 		
 		// $result = fetch_all_application_detail1($entity,$status);
-		$result = application_list_fetch($entity,$status);
+		if($page_status=='action-list'){
+			$result = application_list_fetch($entity,$status);
+		}else if($page_status=='verified-list'|| $page_status=='reject-list'){
+			$result = application_list_fetch_for_verified_reject($entity,$status);
+		}
+		
 
 		// echo "<pre>";print_r($result);die;
 
@@ -81,6 +108,8 @@ function view_app_page($status='', $entity = '',$page_status='') {
 				$header['flat_type'] = array('data' => 'Flat Type');
 				$header['allotment_category'] = array('data' => 'Allotment Reason');
 				$header['computer_serial_no'] = array('data' => 'Computer Serial No');
+				$header['approval_or_rejection_date'] = array('data' => 'Approval/Rejection Date');
+				$header['Status'] = array('data' => 'Status');
 				$header['view'] = array('data' => 'View');
 				
 
@@ -133,17 +162,20 @@ function view_app_page($status='', $entity = '',$page_status='') {
 					$fields[] = $data->flat_type;
 					$fields[] = $data->allotment_category;
 					$fields[] = $data->computer_serial_no;
+					$fields[] = $data->created_at;
+					$fields[] = $data->status_description;
 					global $base_path;
 			 		$src=$base_path.drupal_get_path('module', 'view_application_list').'/images/view1.png';
 					$fields[] = l(
 									'<img src="'.$src.'" alt="View Icon">',
-									'application_detail/'.encrypt_url($data->online_application_id), 
+									'application_detail/'.encrypt_url($data->online_application_id).'/'.'verified-list', //
 									array(
 											'html'=>TRUE,
 											'attributes'=> array('target' => '_blank'),
 									)
 								);
-					
+
+
 				}else{
 
 					$fields[] = $data->applicant_name;
@@ -156,7 +188,7 @@ function view_app_page($status='', $entity = '',$page_status='') {
 			 		$src=$base_path.drupal_get_path('module', 'view_application_list').'/images/view1.png';
 					$fields[] = l(
 									'<img src="'.$src.'" alt="View Icon">',
-									'application_detail/'.encrypt_url($data->online_application_id), 
+									'application_detail/'.encrypt_url($data->online_application_id).'/'.'action-list', 
 									array(
 											'html'=>TRUE,
 											'attributes'=> array('target' => '_blank'),
@@ -165,12 +197,21 @@ function view_app_page($status='', $entity = '',$page_status='') {
 
 					if($status == 'applied') {
 						$update_status = 'ddo_verified_1';
+						$reject_status = 'ddo_reject_1';
 					}else if($status == 'ddo_verified_1'){
 						$update_status = 'housing_sup_approved_1';
+						$reject_status = 'housing_sup_reject_1';
 					}else if($status == 'alloted'){
-						//echo 'hg';die;
 						$update_status = 'housing_official_approved';
+						$reject_status='housing_official_reject';
+					}else if($status == 'applicant_acceptance'){
+						$update_status = 'ddo_verified_2';
+						$reject_status='ddo_reject_2';
+					}else if($status == 'ddo_verified_2'){
+						$update_status = 'housing_sup_approved_2';
+						$reject_status='housing_sup_reject_2';
 					}
+
 
 					
 					$onclick="return confirm('Are you sure you want to approve?')";
@@ -179,7 +220,7 @@ function view_app_page($status='', $entity = '',$page_status='') {
 					alt="Accept Icon" alt="Accept Icon">Approve' , 'application-approve/'.encrypt_url($data->online_application_id).'/'.encrypt_url($update_status).'/'.encrypt_url($status).'/
 					'.encrypt_url($entity), array('html'=>TRUE, 'attributes' => array('onclick' => $onclick, 'style' => 'color: #0090C7;font-weight: 400;text-decoration: underline; 
 					font-size:14px'))).' &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;| <br><br>'.l('<img height="18" width="18" src="'.$base_path.drupal_get_path('module', 'view_application_list'
-					).'/images/reject_icon.png" title="Reject" alt="Reject Icon">Reject' ,  'update_status/'.encrypt_url($data->online_application_id).'/'.encrypt_url('reject').'/'.
+					).'/images/reject_icon.png" title="Reject" alt="Reject Icon">Reject' ,  'update_status/'.encrypt_url($data->online_application_id).'/'.encrypt_url($reject_status).'/'.
 					encrypt_url($status).'/'.encrypt_url($entity), array('html'=>TRUE, 'attributes' => array('onclick' => $onclick1, 'style' => 'color: #0090C7;font-weight: 
 					400;text-decoration: underline; font-size:14px')));		
 				}

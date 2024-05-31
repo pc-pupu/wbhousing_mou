@@ -1,6 +1,7 @@
 <?php
-
+global $base_path;
 $isVal = $output[0];
+//echo "<pre>";print_r($page_status);die;
 if($isVal){
 	$application_arr = $output[2];
 	$entityList = $application_arr[0];
@@ -13,7 +14,10 @@ if($isVal){
 	$entityType = $entityList['type'];
 	$application_data = $application_arr[1];
 	$common_data = $output[1];
-	$applicant_data = $output[3];	
+	$applicant_data = $output[3];
+
+  if(isset($output[4]))
+  $status_description=$output[4];	
 	
 	#krumo($applicant_data);
 	/*if($common_data->status == 'applied'){
@@ -22,7 +26,7 @@ if($isVal){
 		echo l('Reject' ,  'update_status/'.encrypt_url($common_data->online_application_id).'/'.encrypt_url('reject'),							$options).l('Verify' , 'update_status/'.encrypt_url($common_data->online_application_id).'/'.encrypt_url('verified'),							$options);
 	}*/
 	//echo $common_data->online_application_id;
-  //echo "<pre>";print_r($applicant_data);die;
+  //echo "<pre>";print_r($output);die;
 ?>
 
 
@@ -43,7 +47,7 @@ if($isVal){
     <?php					
 		/*echo l('<img height="18" width="18" src="../'.drupal_get_path('module', 'view_application_list').'/images/pdf_icon.png" title="Download Application" alt="PDF Icon">Download Application', 'application_detail_pdf/'.encrypt_url($common_data->online_application_id).'/App_Details_'.$common_data->application_no, array('html'=>TRUE, 'attributes' => array('target' => '_blank', 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px')));*/
 		
-			echo l('<img height="30" width="30" src="../'.drupal_get_path('module', 'view_application_list').'/images/download.png" title="Download Signed 
+			echo l('<img height="30" width="30" src="'.$base_path.drupal_get_path('module', 'view_application_list').'/images/download.png" title="Download Signed 
 			Application Form" alt="Download Icon">Download Signed Application Form', $download_path.$path, array('html'=>TRUE, 
 			'attributes' => array('download' => $custom_file_name, 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px')));
 	?>
@@ -62,7 +66,7 @@ if($isVal){
     		
     			<td>
     <?php					
-		echo l('<img height="30" width="30" src="../'.drupal_get_path('module', 'view_application_list').'/images/download_icon.png" title="Download Payslip" alt="PDF Icon">Download Payslip', $download_path.$path, array('html'=>TRUE, 'attributes' => array('download' => $custom_file_name, 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px')));
+		echo l('<img height="30" width="30" src="'.$base_path.drupal_get_path('module', 'view_application_list').'/images/download_icon.png" title="Download Payslip" alt="PDF Icon">Download Payslip', $download_path.$path, array('html'=>TRUE, 'attributes' => array('download' => $custom_file_name, 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px')));
 	?>
                 </td>
     <?php
@@ -142,7 +146,18 @@ if($isVal){
     </tr>
     <tr>
       <th style="background-color:#a1baef">Application Status</th>
-      <td><?php echo ($common_data->status == 'allotted') ? 'Allotted Offer' : $common_data->status;?></td>
+      <!--debolina start-->
+     <!--  <td><?php //echo ($common_data->status == 'allotted') ? 'Allotted Offer' : $common_data->status;?></td> -->
+     <td><?php if($page_status=='verified-list'){
+      echo $common_data->status_description;
+      }else if ($page_status=='action-list'){
+      echo $status_description;  
+      }
+      ?> 
+     </td>
+     <!--debolina end-->
+  </td>
+      
     </tr>
     <tr>
       <th style="background-color:#a1baef">Date of Action</th>

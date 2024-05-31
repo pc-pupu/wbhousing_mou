@@ -23,6 +23,11 @@ function application_list_page() {
 		 }
 		 $data_val = isset($data_arr[$data->online_application_id]) ? $data_arr[$data->online_application_id] : NULL;*/
 		 
+		 //debolina start
+			$current_application_status_description=fetch_application_status_description($data->status);	
+			//debolina end
+
+
 		 $fields = array();
 		 $returns = check_application_entity(0,$data->online_application_id);
 		 $entityList = $returns[0];
@@ -33,7 +38,13 @@ function application_list_page() {
 		 	$fields[] = $data->application_no;
 		 }
 		 $fields[] = implode('/', array_reverse(explode('-', $data->date_of_application)));
-		 $fields[] = ($data->status == 'allotted') ? 'Allotted Offer' : $data->status;
+
+		 //debolina start
+		 // $fields[] = ($data->status == 'allotted') ? 'Allotted Offer' : $data->status;
+		  $fields[]=$current_application_status_description;
+		 //debolina end
+
+
 		 $fields[] = implode('/', array_reverse(explode('-', $data->date_of_verified)));
 		 if($data->status == 'draft') {
 			$fields[] = '';
