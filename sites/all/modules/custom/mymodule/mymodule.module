@@ -1,0 +1,194 @@
+<?php
+
+	function mymodule_init() {
+		#die();
+		#echo  request_uri();
+		//$trail = menu_get_active_trail();
+		//dpm($trail[(sizeof($trail)-1)]);
+		
+		global $user;
+		global $user_role;
+		 
+		$roles_arr = array_keys($user->roles);
+		if(sizeof($roles_arr) > 1)
+			$user_role =  $roles_arr[1];
+		
+		//print_r($user_role);exit;
+	}
+
+	function mymodule_form_alter(&$form, &$form_state, $form_id) {
+	//echo $form_id;
+		#krumo($form);
+		//print_r($form);
+		global $user_role;
+		
+		
+		if($form_id == 'user_login_block') {
+		
+			/*echo '<pre>';
+			print_r($form);*/
+			#krumo($form);
+			//print_r($form);
+			
+			
+			$form['links']['#markup'] = '<div class="item-list">
+				<ul>
+					<li class="first">'.l('New Registration', 'user_registration').'</li>
+					<li class="last">'.l('Request New Password', 'user/password').'</li>
+				</ul>
+			</div>
+			';
+			#krumo($form['links']['#markup']);
+		
+		}
+	
+	
+	/*if($form_id == 'user_cancel_confirm_form') {
+		
+	}*/
+	
+		/*if($form_id == 'user_profile_form') {
+			$uid = $form['#user']->uid;
+			$role = $form['account']['roles']['#default_value'][1];
+			
+			drupal_set_title("Change Password");
+			
+			$form['account']['name']['#disabled'] = TRUE;
+			$form['account']['name']['#element_validate'] = array('element_validate_username');
+			
+			$form['account']['name']['#weight']		 = 1;
+			$form['account']['mail']['#weight'] 	 = 2;
+			$form['account']['pass']['#weight'] 	 = 3;
+			$form['account']['roles']['#weight']     = 4;
+			$form['account']['status']['#weight']    = 5;
+			
+			$form['account']['roles']['#disabled'] = TRUE;
+			if($role == 3) {
+				unset($form['account']['status']);
+			}
+			
+			if($user_role == 3) {
+				if($role != 3) {
+					unset($form['account']['pass']);	
+				}
+			}
+	
+			unset($form['autologout_user_'.$uid]);
+			unset($form['ckeditor']);
+			
+			$form['#validate'][] = 'user_info_edit_validate';
+			$form['#submit'][] = 'users_info_edit_submit';	
+			$form['#attributes'] = array('onsubmit' => 'return validate_user_profile_form()');
+		}*/
+		
+		if($form_id == 'user_login_block') {
+			$form['name']['#attributes'] = array('autocomplete' => 'off');
+			$form['pass']['#attributes'] = array('autocomplete' => 'off');
+			
+			$form['#attributes'] = array('onsubmit' => 'return validate_user_login_form(this)');	
+		}
+		
+		if($form_id == 'user_login') {
+			$form['#prefix'] = '<div class="login-panel">';
+  			$form['#suffix'] = '</div>';
+			
+			$form['name']['#attributes'] = array('autocomplete' => 'off');
+			$form['pass']['#attributes'] = array('autocomplete' => 'off');
+			
+			$form['#attributes'] = array('onsubmit' => 'return validate_user_login_form(this)');	
+		}
+		
+		if($form_id == 'user_pass') {
+			$form['#prefix'] = '<div class="pass-panel">';
+  			$form['#suffix'] = '</div>';
+			
+			drupal_set_title(t('Request New Password'));
+			
+			$form['name']['#title'] = 'E-mail Address';
+			$form['actions']['submit']['#value'] = 'E-mail New Password';
+			
+			$form['#attributes'] = array('onsubmit' => 'return validate_request_new_password()');	
+		}
+	
+	}
+	
+	/*function user_info_edit_validate(&$form, &$form_state) {
+		
+		global $user_role;
+		$uid = $form['#user']->uid;
+		$role = $form['account']['roles']['#default_value'][1];
+		
+		$query = db_select('users', 'u');
+		$query->fields('u', array());
+		$query->condition('u.uid', $uid, '=');
+		$result = $query->execute();
+		$row_count = $result->rowCount();
+		if($row_count > 0) {
+			$data = $result->fetchObject();
+		}
+		
+		$value_mail = strtolower(trim($form_state['values']['mail']));
+		$value = trim($form_state['values']['pass']);
+		$status = trim($form_state['values']['status']);
+		
+		if($user_role == 3) {
+			if($role == 3) {
+				if($value_mail != ''){
+					if($value_mail == $data->mail && $value == '') {
+						form_set_error('', t('Data are same. No data changed.'));	
+					}
+				}
+			}
+			else {
+				if($value_mail != '' && $status != ''){
+					if($value_mail == $data->mail && $value == '' && $status == $data->status) {
+						form_set_error('', t('Data are same. No data changed.'));	
+					}
+				}
+			}
+		}
+		else {
+			if($value_mail != ''){
+				if($value_mail == $data->mail && $value == '') {
+					form_set_error('', t('Data are same. No data changed.'));	
+				}
+			}
+		}
+		
+		if($value != '') {
+			if(strlen($value) < 6 || strlen($value) > 20) {
+				form_set_error('pass', t('Password must be between 6 to 20 characters.'));
+			}
+			else {
+				if($value !== '' && !preg_match("/^[a-zA-Z0-9!@#$%^&*_-]+$/",$value)) {
+					form_set_error('pass', t('Password doesnot allow whitespace or characters other than special characters.'));
+				}	
+			}
+		}
+		
+	}
+	
+	function users_info_edit_submit(&$form, &$form_state) {*/
+		/*update user table data*/
+		/*global $user;
+		$user_arr = array();
+		$user_arr['mail']  =  strtolower(trim($form_state['values']['mail']));
+		db_update('users')
+		->fields($user_arr)
+		->condition('uid', $user->uid, '=')
+		->execute();	
+	}*/
+	
+	
+	
+	function mymodule_page_alter(&$page) {
+	  
+		#krumo($page);
+	  
+	}
+
+	function mymodule_menu_alter(&$items) {
+		
+		#krumo($page);
+			
+	}

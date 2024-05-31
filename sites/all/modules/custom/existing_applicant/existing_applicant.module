@@ -1,0 +1,31 @@
+<?php
+
+	function existing_applicant_init() {
+		drupal_add_library('system','ui.datepicker');
+		
+		drupal_add_css(drupal_get_path('module', 'common_application') . '/css/select2.min.css');
+		drupal_add_js(drupal_get_path('module', 'common_application') . '/js/select2.min.js');
+	}
+	
+	function existing_applicant_menu() {
+		$items = array();
+		$items['existing_applicant_entry'] = array(
+			'title'=>'Existing Applicant(Waiting List Applicant) Data Entry',
+			'page callback'=>'drupal_get_form',
+			'page arguments'=>array('existing_applicant_form'),
+			'file' => 'include/existing_applicant_form.inc',
+			'access arguments' => array('administer Existing Applicant Form'),
+			//'access callback'=>TRUE
+		);
+		return $items;	
+		
+	}
+	
+	function existing_applicant_permission() {
+		return array(
+			'administer Existing Applicant Form' => array(
+				'title' => t('administer Existing Applicant Form'),
+				'description' => t('Perform administer Existing Applicant Form.'),
+			),
+		);	
+	}

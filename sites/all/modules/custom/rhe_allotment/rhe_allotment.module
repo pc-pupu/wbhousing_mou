@@ -1,0 +1,130 @@
+<?php
+	function rhe_allotment_menu() {	
+		$items['rhe_allotment'] = array(
+		  'title' => 'RHE Allotment',
+		  'page callback' => 'drupal_get_form',
+		  'page arguments' => array('rhe_allotment_form'),
+		  'file' => 'rhe_allotment_page.inc',
+		  'access arguments' => array('administer rhe allotment'),
+		);
+
+		$items['rhe_allotment/%/%'] = array(
+		  'title' => 'RHE Allotment',
+		  'page callback' => 'rhe_allotment_update',
+		  'page arguments' => array(1,2),
+		  'file' => 'rhe_allotment_update.inc',
+		  'access arguments' => array('administer rhe allotment'),
+		);
+		
+		return $items;
+		
+	}
+		
+		
+function rhe_allotment_permission() {
+	return array(
+		'administer rhe allotment' => array(
+		  'title' => t('Administer rhe allotment'),
+		  'description' => t('Perform administer rhe allotment.'),
+		),
+		
+	);
+  
+}		
+
+
+
+function get_estatewise_vacancy($allotment_type) {
+	$status_id = 1; // for vacant flat
+	$district_code = 17; // for Kolkata 
+	$result = "";
+
+	if(!empty($allotment_type)) {
+		$result = db_query("SELECT t2.estate_id, t2.estate_name,
+		count(case when t1.floor = 'G' then t1.flat_id end) as floor_0,
+		count(case when t1.floor = 'F' then t1.flat_id end) as floor_1,
+		count(case when t1.floor = 'S' then t1.flat_id end) as floor_2,
+		count(case when t1.floor = 'T' then t1.flat_id end) as floor_3
+		FROM housing_flat AS t1
+		INNER JOIN housing_estate AS t2 ON t1.estate_id = t2.estate_id
+		INNER JOIN housing_district AS t3 ON t2.district_code = t3.district_code
+		WHERE t1.flat_type_id = " . $allotment_type . "
+		AND t1.flat_status_id = " . $status_id . "
+		AND t3.district_code = " . $district_code . "
+		GROUP BY t2.estate_id, t2.estate_name
+		ORDER BY t2.estate_name");
+	}
+	return $result;
+}
+function get_no_of_applicant_vs($allotment_type, $occupation_estate) {
+	$no_of_applicant = 0;
+	
+	if(!empty($allotment_type) && !empty($occupation_estate)) {
+		$result = db_query("SELECT count(*) as total_applicant FROM housing_online_application as t1
+					INNER JOIN housing_vs_application as t2 ON t1.online_application_id = t2.online_application_id
+					WHERE t1.status = 'verified'
+					AND t2.flat_type_id = " . $allotment_type . " AND t2.occupation_estate = " . $occupation_estate);
+					
+		$record = $result->fetchObject();
+		$no_of_applicant = $record -> total_applicant;
+	}	
+	
+	return $no_of_applicant;	
+}
+
+function get_no_of_applicant_cs($allotment_type, $occupation_estate) {
+	$no_of_applicant = 0;
+	
+	if(!empty($allotment_type) && !empty($occupation_estate)) {
+		$result = db_query("SELECT count(*) as total_applicant FROM housing_online_application as t1
+					INNER JOIN housing_cs_application as t2 ON t1.online_application_id = t2.online_application_id
+					WHERE t1.status = 'verified'
+					AND t2.flat_type_id = " . $allotment_type . " AND t2.occupation_estate = " . $occupation_estate);
+
+		$record = $result->fetchObject();
+		$no_of_applicant = $record -> total_applicant;
+	}	
+	
+	return $no_of_applicant;	
+}
+function get_no_of_applicant_fresh($allotment_type = '') {
+	$no_of_applicant = 0;
+	
+	if(!empty($allotment_type) && !empty($occupation_estate)) {
+		$result = db_query("SELECT count(*) as total_applicant FROM housing_online_application as t1
+					INNER JOIN housing_new_allotment_application as t2 ON t1.online_application_id = t2.online_application_id
+					WHERE t1.status = 'verified'
+					AND t2.flat_type_id = " . $allotment_type);
+
+		$record = $result->fetchObject();
+		$no_of_applicant = $record -> total_applicant;
+	}	
+	
+	return $no_of_applicant;	
+}
+
+function get_vacancy_details($allotment_type, $estate_id, $application_type) {
+	$vacancy_details = array();
+	$floor['vs'] = "('F','S')";
+	$floor['cs'] = "('G', 'T')";
+
+	$result = db_query("SELECT t1.* FROM housing_flat AS t1
+	INNER JOIN housing_estate AS t2 ON t1.estate_id = t2.estate_id
+	INNER JOIN housing_district AS t3 ON t2.district_code = t3.district_code
+	WHERE t1.flat_type_id = 1
+	AND t1.flat_status_id = 1
+	AND t3.district_code = 17
+	AND t1.floor IN " . $floor[$application_type] . " AND t2.estate_id = " . $estate_id);
+
+	if($result -> rowCount() > 0) {
+		foreach($result as $record) {
+			$vacancy_details[] = array(
+				'estate_id' => $record -> estate_id,
+				'flat_id' => $record -> flat_id,
+				'flat_type_id' => $record -> flat_type_id,
+			);
+		}
+	}
+	return $vacancy_details;
+}
+		

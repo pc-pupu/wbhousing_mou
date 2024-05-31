@@ -1,0 +1,307 @@
+<?php
+	
+	function update_flat_init() {
+		drupal_add_css(drupal_get_path('module', 'common_application') . '/css/select2.min.css');
+		drupal_add_js(drupal_get_path('module', 'common_application') . '/js/select2.min.js');	
+	}
+	
+	function update_flat_menu() {
+		$items['update_flat'] = array(
+	  		'title' => 'Update RHE Flat Master',	
+	  		//'page callback' => 'update_flat_page',
+	  		'page callback' => 'drupal_get_form',
+	  		'page arguments' => array('update_flat_form'),
+	  		'file' => 'view_flat_list_page.inc',
+	  		'access arguments' => array('administer RHE flat Master'),
+		);
+		
+		$items['add_block'] = array(
+	  		'title' => 'Add RHE Block Name',	
+	  		//'page callback' => 'update_flat_page',
+	  		'page callback' => 'drupal_get_form',
+	  		'page arguments' => array('add_flat_block_form'),
+	  		'file' => 'add_flat_block_form.inc',
+	  		'access arguments' => array('administer RHE flat Master'),
+		);
+	
+		$items['update_flat/edit/%'] = array(
+	  		'title' => 'Edit RHE Flat',	
+	  		'page callback' => 'editFlatList',
+	  		'page arguments' => array(2),
+	  		'file' => 'view_flat_list_page.inc',
+	  		'access arguments' => array('administer RHE flat Master'),
+		);
+		
+		$items['flat_list_pdf/%']=array(
+			'title' => 'List of Flats PDF',
+			'page callback' => 'flat_list_page_pdf',
+			'page arguments' => array(1),
+			'file' => 'flat_list_page_pdf.inc',
+			'access arguments' => array('administer RHE flat Master'),
+		);
+		
+		$items['rhe_wise_flat_list'] = array(
+	  		'title' => 'RHE Wise Flat List',
+			'page callback' => 'drupal_get_form',
+			'page arguments' => array('rhe_wise_flat_list_form'),
+	  		'file' => 'rhe_wise_flat_list_page.inc',
+	  		'access arguments' => array('administer RHE flat Master'),
+		);
+		
+		$items['rhe_wise_flat_list_pdf/%/%']=array(
+			'title' => 'RHE Wise Flat List PDF',
+			'page callback' => 'rhe_wise_flat_list_page_pdf',
+			'page arguments' => array(1, 2),
+			'file' => 'rhe_wise_flat_list_page_pdf.inc',
+			'access arguments' => array('administer RHE flat Master'),
+		);
+		
+		return $items;
+	}
+	
+	/*function update_flat_page() {
+		$build = array();
+
+		// Render your two forms here.
+		$build['form_one'] = drupal_get_form('add_flat_block_form');
+		$build['form_two'] = drupal_get_form('update_flat_form');
+		
+		return $build;
+	}*/
+	
+	function update_flat_form($form, &$form_state) {
+		$form['flat_type'] = array(
+			'#title' => t('Flat Type'),
+			'#type' => 'select',
+			'#options' => rhe_flat_type(),
+			'#required' => TRUE,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+		);
+		
+		$form['rhe_name'] = array(
+			'#title' => t('Name of the RHE'),
+			'#type' => 'select',
+			'#options' => rhe_list(),
+			'#required' => TRUE,
+			//'#weight' => -10,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+			'#select2' => array(
+				'width' => '500',
+				//'placeholder' => '- Select -',
+				'allowClear' => TRUE
+        	)
+		);
+		
+		$form['rhe_block'] = array(
+			'#title' => t('Name of the Block'),
+			//'#description' => t('If you don\'t find block name please add it first.'),
+			'#type' => 'select',
+			'#options' => rhe_block_list(),
+			'#required' => TRUE,
+			//'#weight' => -10,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+			'#select2' => array(
+				'width' => '300',
+				//'placeholder' => '- Select -',
+				'allowClear' => TRUE
+        	)
+		);
+		
+		$form['flat_floor'] = array(
+			'#title' => t('Floor No.'),
+			'#type' => 'select',
+			'#options' => array('G' => 'Ground', 'F' => 'First', 'S' => 'Second', 'T' => 'Third'),
+			'#required' => TRUE,
+			//'#weight' => -10,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+		);
+	  
+		$form['flat_no'] = array(
+			'#title' => t('Flat No.'),
+			'#type' => 'textfield',
+			'#default_value' => '',
+			'#required' => TRUE,
+			'#prefix' => '<div class="four ">',
+			'#suffix' => '</div>',
+			'#element_validate' => array('validate_flat_no'), 
+		);
+	  
+		$form['flat_status'] = array(
+			'#title' => t('Flat Status'),
+			'#type' => 'select',
+			'#options' => flat_status_list(),
+			'#required' => TRUE,
+			'#prefix' => '<div class="four ">',
+			'#suffix' => '</div>',
+		);
+		
+		$form['flat_category'] = array(
+			'#title' => t('Flat Category'),
+			'#type' => 'select',
+			'#options' => flat_category_list(),
+			'#required' => TRUE,
+			'#prefix' => '<div class="four ">',
+			'#suffix' => '</div>',
+		);
+		
+	  	$form['submit'] = array(
+			'#value' => t('Add'),
+			'#type' => 'submit',
+			'#prefix' => '<div class="four " style="padding-top: 42px">',
+			'#suffix' => '</div>',
+	  	);
+		
+		$form['#attributes'] = array('onsubmit' => 'return validate_update_flat_form()');
+	  	$form['#submit']= array('update_flat_submit');
+	  
+	  	$form['all_list'] = array(
+		   	'#type' => 'markup',
+		   	'#markup' => viewFlatList(),
+			'#weight' => 50,
+			'#prefix' => '<div style="margin-top:30px;">',
+			'#suffix' => '</div>',
+		);
+		
+	  
+		return $form;
+	}
+	
+	function editFlatList($edit = '') {
+		return drupal_get_form('edit_flat_form',$edit);
+	}
+	
+	function edit_flat_form($form, &$form_state, $id) {
+		$id = decrypt_url($id);
+		$edit = rhe_flat_list_rst_id($id)->fetchObject();
+	 
+		$form['flat_id'] = array(
+			'#type' => 'hidden',
+			'#default_value' =>$edit->flat_id ,
+			'#weight' => -11,
+	  	);
+		
+		$form['flat_type'] = array(
+			'#title' => t('Flat Type'),
+			'#type' => 'select',
+			'#options' => rhe_flat_type(),
+			'#default_value' => $edit->flat_type_id,
+			'#required' => TRUE,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+	 	 );
+		
+	  	$form['rhe_name'] = array(
+			'#title' => t('Name of the RHE'),
+			'#type' => 'select',
+			'#options' => rhe_list(),
+			'#required' => TRUE,
+			'#default_value' => $edit->estate_id,
+			//'#disabled' => TRUE,
+			//'#weight' => -10,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+			'#select2' => array(
+				'width' => '500',
+				//'placeholder' => '- Select -',
+				'allowClear' => TRUE
+        	)
+	  	);
+		
+		$form['rhe_block'] = array(
+			'#title' => t('Name of the Block'),
+			'#type' => 'select',
+			'#options' => rhe_block_list(),
+			'#required' => TRUE,
+			'#default_value' => $edit->block_id,
+			//'#weight' => -10,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+			'#select2' => array(
+				'width' => '300',
+				//'placeholder' => '- Select -',
+				'allowClear' => TRUE
+        	)
+		);
+		
+		$form['flat_floor'] = array(
+			'#title' => t('Floor No.'),
+			'#type' => 'select',
+			'#options' => array('G' => 'Ground', 'F' => 'First', 'S' => 'Second', 'T' => 'Third'),
+			'#required' => TRUE,
+			'#default_value' => $edit->floor,
+			//'#weight' => -10,
+			'#prefix' => '<div class="two ">',
+			'#suffix' => '</div>',
+		);
+	  
+	  	$form['flat_no'] = array(
+			'#title' => t('Flat no'),
+			'#type' => 'textfield',
+			'#default_value' => $edit->flat_no,
+			'#required' => TRUE,
+			'#prefix' => '<div class="four ">',
+			'#suffix' => '</div>',
+			'#element_validate' => array('edit_validate_flat_no'), 
+	  	);
+	   	
+		$form['flat_status'] = array(
+			'#title' => t('Flat Status'),
+			'#type' => 'select',
+			'#options' => flat_status_list(),
+			'#default_value' => $edit->flat_status_id,
+			'#required' => TRUE,
+			'#prefix' => '<div class="four ">',
+			'#suffix' => '</div>',
+	 	 );
+		 
+		 $form['flat_category'] = array(
+			'#title' => t('Flat Category'),
+			'#type' => 'select',
+			'#options' => flat_category_list(),
+			'#default_value' => $edit->flat_category_id,
+			'#required' => TRUE,
+			'#prefix' => '<div class="four ">',
+			'#suffix' => '</div>',
+		);
+		 
+	  	$form['submit'] = array(
+			'#value' => t('Update'),
+			'#type' => 'submit',
+			'#prefix' => '<div class="four " style="padding-top: 42px">',
+			'#suffix' => '</div>',
+	  	);
+		
+		$form['#attributes'] = array('onsubmit' => 'return validate_update_flat_form()');
+	  	$form['#submit']= array('edit_flat_submit');
+		
+	  	$options['attributes']['class'] = array('button','small','round','link-button','steel_blue');
+	  	$str=l('Add New', 'update_flat',$options);
+		
+	  	$form['all_list'] = array(
+		   	'#type' => 'markup',
+		   	'#markup' => $str.'</br></br>'.viewFlatList(),
+			'#weight' => 50,
+			'#prefix' => '<div style="margin-top:20px;">',
+			'#suffix' => '</div>',
+		);
+	  return $form;
+	}
+	
+	
+	
+	function update_flat_permission() {
+		return array(
+			'administer RHE flat Master' => array(
+				'title' => t('Administer RHE flat Master'),
+				'description' => t('Perform administration tasks for RHE flat Master.'),
+			),
+		);
+	}
+	
+	require_once("update_flat_fetch_data.form.inc");
+	require_once("update_flat_validate.form.inc");
+	require_once("update_flat_add_data.form.inc");
