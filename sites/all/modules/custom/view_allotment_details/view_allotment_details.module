@@ -149,3 +149,15 @@
 		//echo $query;
 		return $query->execute();
 	}*/
+
+	function get_applicant_upload_docs($app_id = ''){
+		global $user;
+		$query = db_select('housing_online_application_upload_doc', 'haupdoc');
+		$query->fields('haupdoc', array());
+		if($app_id!=''){
+			$query->condition('haupdoc.online_application_id', $app_id, '=');
+		}else{
+			$query->condition('haupdoc.uid', $user->uid, '=');
+		}
+		return $query->execute();
+	}

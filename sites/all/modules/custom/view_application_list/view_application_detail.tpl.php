@@ -80,8 +80,10 @@ if($isVal){
 		echo l('<img height="30" width="30" src="../'.drupal_get_path('module', 'view_application_list').'/images/download_icon.png" title="Download Allotment Reason Supporting Document" alt="PDF Icon">Download Allotment Reason Supporting Document', $download_path.$path, array('html'=>TRUE, 'attributes' => array('download' => $custom_file_name, 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px')));
 	?>
                 </td>
+    
     <?php		
 			}
+      
 		}
 		else if(trim($entityType) == 'Vertical Shifting') {
 			if($common_data->uri_vs != '') {
