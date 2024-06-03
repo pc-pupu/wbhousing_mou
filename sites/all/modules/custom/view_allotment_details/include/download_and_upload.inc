@@ -151,7 +151,7 @@ function download_and_upload_submit($form, &$form_state) {
                 'doc_fid' => $r['fid'],
                 'doc_filename' => $r['filename']
             );
-            db_insert('housing_online_application_upload_doc')->fileds($arrins)->execute();
+            db_insert('housing_online_application_upload_doc')->fields($arrins)->execute();
         }
     }
     drupal_set_message(t('The documents has been uploaded successfully.'));
