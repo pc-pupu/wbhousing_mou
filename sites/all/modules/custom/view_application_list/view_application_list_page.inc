@@ -35,7 +35,7 @@ function view_app_page($status='', $entity = '',$page_status='') {
 		}else if($status == 'housing_sup_reject_2'){
 			$statusMsg = 'Housing Supervisor(Level-2) Rejected ';
 		}else if($status == 'applicant_acceptance'){
-			$statusMsg = 'Alloted ';
+			$statusMsg = 'Allotted ';
 		}
 
 
@@ -168,7 +168,7 @@ function view_app_page($status='', $entity = '',$page_status='') {
 			 		$src=$base_path.drupal_get_path('module', 'view_application_list').'/images/view1.png';
 					$fields[] = l(
 									'<img src="'.$src.'" alt="View Icon">',
-									'application_detail/'.encrypt_url($data->online_application_id).'/'.'verified-list', //
+									'application_detail/'.encrypt_url($data->online_application_id).'/'.'verified-list'.'/'.encrypt_url($status), //
 									array(
 											'html'=>TRUE,
 											'attributes'=> array('target' => '_blank'),
@@ -188,7 +188,7 @@ function view_app_page($status='', $entity = '',$page_status='') {
 			 		$src=$base_path.drupal_get_path('module', 'view_application_list').'/images/view1.png';
 					$fields[] = l(
 									'<img src="'.$src.'" alt="View Icon">',
-									'application_detail/'.encrypt_url($data->online_application_id).'/'.'action-list', 
+									'application_detail/'.encrypt_url($data->online_application_id).'/'.'action-list'.'/'.encrypt_url($status), 
 									array(
 											'html'=>TRUE,
 											'attributes'=> array('target' => '_blank'),
@@ -201,7 +201,7 @@ function view_app_page($status='', $entity = '',$page_status='') {
 					}else if($status == 'ddo_verified_1'){
 						$update_status = 'housing_sup_approved_1';
 						$reject_status = 'housing_sup_reject_1';
-					}else if($status == 'alloted'){
+					}else if($status == 'allotted'){
 						$update_status = 'housing_official_approved';
 						$reject_status='housing_official_reject';
 					}else if($status == 'applicant_acceptance'){
