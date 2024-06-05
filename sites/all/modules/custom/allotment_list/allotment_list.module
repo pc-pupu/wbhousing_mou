@@ -396,5 +396,13 @@
 		return $query->execute();
 		
 	}
+
+
+
+
+	function custom_souvik_1(){
+		echo 'Souvik 1';
+		die;
+	}
 	
 	
