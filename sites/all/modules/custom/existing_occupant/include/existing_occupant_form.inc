@@ -992,6 +992,7 @@
 		db_insert('housing_flat_occupant')
 		->fields($allotment_ins_arr)
 		->execute();
+
 		
 		$flatno = $form_state['values']['occupied_flat'];
 		drupal_set_message('Occupant Data for Flat No.- '.$flatno.' Inserted Successfully.');

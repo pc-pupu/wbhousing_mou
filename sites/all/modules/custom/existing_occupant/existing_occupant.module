@@ -261,7 +261,7 @@
 			$query->addField('hft', 'flat_type');
 			$db_and = db_and();
 			$db_and->condition('u.status', 0, '=');
-			$db_and->condition('ur.rid', 5, '=');
+			// $db_and->condition('ur.rid', 5, '=');
 			$db_and->condition('hoa.status', 'allotted', '=');
 			$db_and->condition('hoa.is_backlog_applicant', 2, '=');
 			$db_and->condition('hf.estate_id', $rhe_name, '=');
@@ -271,7 +271,7 @@
 			//$query = $query->extend('PagerDefault')->limit(5);
 			//$query = $query->extend('TableSort')->extend('PagerDefault')->limit(5);
 			
-			//echo $query;
+			// echo $query;
 			return $query->execute();	
 		}
 	}

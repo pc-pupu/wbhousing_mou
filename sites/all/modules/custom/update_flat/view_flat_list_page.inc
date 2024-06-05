@@ -26,16 +26,18 @@
 			 $fields[] = $data->estate_name;
 			 $fields[] = $data->estate_address;
 			 $fields[] = $data->block_name.' Block';
-			 if($data->floor == 'G')
+			 /*if($data->floor == 'Ground')
 			 	$fields[] = 'Ground';
-			 else if($data->floor == 'F')
+			 else if($data->floor == 'First')
 			 	$fields[] = 'First';
-			 else if($data->floor == 'S')
+			 else if($data->floor == 'Second')
 			 	$fields[] = 'Second';
 			 else if($data->floor == 'T')
 			 	$fields[] = 'Third';
 			 else if($data->floor == '')
-			 	$fields[] = '';
+			 	$fields[] = '';*/
+			
+			$fields[] = $data->floor;
 			 $fields[] = $data->flat_no;
 			 $str = $data->flat_status;
 			 //if($data->is_occupied == FALSE) {

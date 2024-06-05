@@ -8,13 +8,20 @@
 		  'access arguments' => array('administer rhe allotment'),
 		);
 
-		$items['rhe_allotment/%/%'] = array(
+		/* $items['rhe_allotment/%'] = array(
+		  'title' => 'RHE Allotment',
+		  'page callback' => 'rhe_allotment_update',
+		  'page arguments' => array(1),
+		  'file' => 'rhe_allotment_update.inc',
+		  'access arguments' => array('administer rhe allotment'),
+		); */
+		/* $items['rhe_allotment/%/%'] = array(
 		  'title' => 'RHE Allotment',
 		  'page callback' => 'rhe_allotment_update',
 		  'page arguments' => array(1,2),
 		  'file' => 'rhe_allotment_update.inc',
 		  'access arguments' => array('administer rhe allotment'),
-		);
+		); */
 		
 		return $items;
 		
@@ -62,7 +69,7 @@ function get_no_of_applicant_vs($allotment_type, $occupation_estate) {
 	if(!empty($allotment_type) && !empty($occupation_estate)) {
 		$result = db_query("SELECT count(*) as total_applicant FROM housing_online_application as t1
 					INNER JOIN housing_vs_application as t2 ON t1.online_application_id = t2.online_application_id
-					WHERE t1.status = 'verified'
+					WHERE t1.status = 'housing_sup_approved_1'
 					AND t2.flat_type_id = " . $allotment_type . " AND t2.occupation_estate = " . $occupation_estate);
 					
 		$record = $result->fetchObject();
@@ -78,7 +85,7 @@ function get_no_of_applicant_cs($allotment_type, $occupation_estate) {
 	if(!empty($allotment_type) && !empty($occupation_estate)) {
 		$result = db_query("SELECT count(*) as total_applicant FROM housing_online_application as t1
 					INNER JOIN housing_cs_application as t2 ON t1.online_application_id = t2.online_application_id
-					WHERE t1.status = 'verified'
+					WHERE t1.status = 'housing_sup_approved_1'
 					AND t2.flat_type_id = " . $allotment_type . " AND t2.occupation_estate = " . $occupation_estate);
 
 		$record = $result->fetchObject();
@@ -87,13 +94,13 @@ function get_no_of_applicant_cs($allotment_type, $occupation_estate) {
 	
 	return $no_of_applicant;	
 }
-function get_no_of_applicant_fresh($allotment_type = '') {
+function get_no_of_applicant_new($allotment_type = '') {
 	$no_of_applicant = 0;
 	
-	if(!empty($allotment_type) && !empty($occupation_estate)) {
+	if(!empty($allotment_type)) {
 		$result = db_query("SELECT count(*) as total_applicant FROM housing_online_application as t1
 					INNER JOIN housing_new_allotment_application as t2 ON t1.online_application_id = t2.online_application_id
-					WHERE t1.status = 'verified'
+					WHERE t1.status = 'housing_sup_approved_1'
 					AND t2.flat_type_id = " . $allotment_type);
 
 		$record = $result->fetchObject();
@@ -104,17 +111,21 @@ function get_no_of_applicant_fresh($allotment_type = '') {
 }
 
 function get_vacancy_details($allotment_type, $estate_id, $application_type) {
-	$vacancy_details = array();
+	$vacancy_details = array(); $comdition = "";
 	$floor['vs'] = "('F','S')";
 	$floor['cs'] = "('G', 'T')";
+
+	if(isset($estate_id) && !empty($estate_id)) {
+		$condition .= " AND t2.estate_id = " . $estate_id;
+	}
 
 	$result = db_query("SELECT t1.* FROM housing_flat AS t1
 	INNER JOIN housing_estate AS t2 ON t1.estate_id = t2.estate_id
 	INNER JOIN housing_district AS t3 ON t2.district_code = t3.district_code
-	WHERE t1.flat_type_id = 1
+	WHERE t1.flat_type_id = " . $allotment_type . "
 	AND t1.flat_status_id = 1
 	AND t3.district_code = 17
-	AND t1.floor IN " . $floor[$application_type] . " AND t2.estate_id = " . $estate_id);
+	AND t1.floor IN " . $floor[$application_type] . $condition);
 
 	if($result -> rowCount() > 0) {
 		foreach($result as $record) {
@@ -127,4 +138,16 @@ function get_vacancy_details($allotment_type, $estate_id, $application_type) {
 	}
 	return $vacancy_details;
 }
+function get_total_vacancy_new($allotment_type) {
+	$result = db_query("SELECT count(*) as total_vacancy FROM housing_flat AS t1
+	INNER JOIN housing_estate AS t2 ON t1.estate_id = t2.estate_id
+	INNER JOIN housing_district AS t3 ON t2.district_code = t3.district_code
+	WHERE t1.flat_type_id = " . $allotment_type . "
+	AND t1.flat_status_id = 1
+	AND t3.district_code = 17");
+
+	$record = $result -> fetchObject();
+	return $record -> total_vacancy;
+}
+
 		

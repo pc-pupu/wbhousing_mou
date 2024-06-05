@@ -83,6 +83,14 @@ if($isVal){
     
     <?php		
 			}
+      ?>
+      <tr><td><?php echo l('<img height="30" width="30" src="'.$base_path.drupal_get_path('module', 'application_of_registration_list').'/images/download_icon.png " title="Download Offer Letter" alt="PDF Icon">Uploaded Current Pay Slip',$output['doc']['current_pay_slip_url'],array('html' => true , 'attributes'=> array('download' => $output['doc']['license_application_signed_form_fname'], 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px'))); ?></td></tr>
+
+      <tr><td><?php echo l('<img height="30" width="30" src="'.$base_path.drupal_get_path('module', 'application_of_registration_list').'/images/download_icon.png " title="Declaration Form" alt="PDF Icon">Uploaded Declaration Signed Form',$output['doc']['declaration_signed_form_url'],array('html'=>true,'attributes'=>array('download' => $output['doc']['declaration_signed_form_fname'], 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px'))); ?></td></tr>
+
+      <tr><td><?php echo l('<img height="30" width="30" src="'.$base_path.drupal_get_path('module', 'application_of_registration_list').'/images/download_icon.png " title="Licence Form" alt="PDF Icon">Uploaded Licence Application Signed Form',$output['doc']['license_application_signed_form_url'],array('html'=>true,'attributes'=>array('download' => $output['doc']['current_pay_slip_fname'], 'style' => 'color: #0090C7;font-weight: 400;text-decoration: none; font-size:14px'))); ?></td></tr>
+
+      <?php
       
 		}
 		else if(trim($entityType) == 'Vertical Shifting') {
@@ -295,10 +303,11 @@ if($isVal){
       <td><?php //echo $common_data->grade_pay;?></td>
     </tr> -->
     
-   <?php /*?> <tr>
+    
+  <tr>
       <th style="background-color:#a1baef">GPF No.</th>
       <td><?php echo $common_data->gpf_no;?></td>
-    </tr><?php */?>
+    </tr>
     
     <tr>
       <th style="background-color:#a1baef">Date of Joining</th>
@@ -321,7 +330,7 @@ if($isVal){
 		$data_office = $result_office->fetchObject();
 		//echo "<pre>";print_r($common_data);die;
 		$office_address = $common_data->office_street.', P.O - '.$common_data->office_post_office.', '.$common_data->office_city_town_village.', '.$common_data->office_district.' - '.$common_data->office_pin_code;
-	?>
+	  ?>
     
     <tr>
       <th style="background-color:#a1baef">Office Address</th>
@@ -349,7 +358,7 @@ if($isVal){
     
     <tr>
   		<th colspan="2" style="background: none repeat scroll 0 0 #5996d9;text-align: center;font-size: 18px;line-height: 24px;font-weight: normal;font-family: 'Dosis',Arial,Verdana,serif;" class="first"><?php echo $heading;?></th>
-</tr>
+    </tr>
 
      <?php 
 //echo "<pre>";print_r($headArr);
@@ -415,6 +424,8 @@ if($isVal){
 </div>
 
 <?php
-}else { ?>
+}else {
+?>
 Invalid Access
-<?php } ?>
+<?php 
+} ?>
