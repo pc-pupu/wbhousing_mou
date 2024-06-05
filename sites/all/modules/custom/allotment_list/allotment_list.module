@@ -398,3 +398,7 @@
 	}
 	
 	
+	function custom_souvik_2(){
+		echo 'Souvik 2';
+		die;
+	}
