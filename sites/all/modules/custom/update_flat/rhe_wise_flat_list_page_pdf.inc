@@ -57,20 +57,12 @@
 					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->flat_type.'</font></td>
 					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->estate_name.'</font></td>
 					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->estate_address.'</font></td>
-					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->block_name.' Block</font></td>';
-					 if($data->floor == 'G')
-						$page_output .='<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">Ground Floor</font></td>';
-					 else if($data->floor == 'F')
-						$page_output .='<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">First Floor</font></td>';
-					 else if($data->floor == 'S')
-						$page_output .='<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">Second Floor</font></td>';
-					 else if($data->floor == 'T')
-						$page_output .='<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">Third Floor</font></td>';
-					 else if($data->floor == '') {
-						$page_output .='<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4"></font></td>';
-					 }
-					$page_output .='<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->flat_no.'</font></td>
-					<td align="right" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->flat_status.'</font></td>
+					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->block_name.' Block</font></td>
+
+					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->floor.'</font></td>
+					
+					<td align="center" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.$data->flat_no.'</font></td>
+					<td align="right" style="border: 1px solid black; border-collapse: collapse;"><font size="4">'.ucwords($data->flat_status).'</font></td>
 				</tr></tbody>';
 				
 				$i++;

@@ -117,16 +117,17 @@
 			 $fields[] = $data->estate_name;
 			 $fields[] = $data->estate_address;
 			 $fields[] = $data->block_name.' Block';
-			 if($data->floor == 'G')
-			 	$fields[] = 'Ground';
-			 else if($data->floor == 'F')
-			 	$fields[] = 'First';
-			 else if($data->floor == 'S')
-			 	$fields[] = 'Second';
-			 else if($data->floor == 'T')
-			 	$fields[] = 'Third';
-			 else if($data->floor == '')
-			 	$fields[] = '';
+			//  if($data->floor == 'G')
+			//  	$fields[] = 'Ground';
+			//  else if($data->floor == 'F')
+			//  	$fields[] = 'First';
+			//  else if($data->floor == 'S')
+			//  	$fields[] = 'Second';
+			//  else if($data->floor == 'T')
+			//  	$fields[] = 'Third';
+			//  else if($data->floor == '')
+			// 		$fields[] = '';
+			$fields[] = $data->floor;
 			 $fields[] = $data->flat_no;
 			 $fields[] = $data->flat_status;
 			 

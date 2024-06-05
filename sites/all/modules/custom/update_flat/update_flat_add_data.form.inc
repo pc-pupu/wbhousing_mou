@@ -24,6 +24,9 @@
 		$flat_arr['flat_no'] 			=  trim($form_state['values']['flat_no']);
 		$flat_arr['flat_status_id'] 	=   trim($form_state['values']['flat_status']);
 		
+		// echo '<<pre>'; print_r($flat_arr); die;
+
+
 		db_insert('housing_flat')
 		->fields($flat_arr)
 		->execute();

@@ -21,7 +21,7 @@
 
 			$current_pay_slip_url = $base_root.$base_path.'/sites/default/files/doc/'.$user->uid.'/'.$doc_arr['current_pay_slip'];
 
-			$current_pay_slip_url = l('<img height="20" width="20" src="'.$base_path.drupal_get_path('module', 'application_of_registration_list').'/images/download_icon.png " title="Download Offer Letter" alt="PDF Icon">Uploaded Current Pay Slip','#',array('html' => true));
+			$current_pay_slip_url = l('<img height="20" width="20" src="'.$base_path.drupal_get_path('module', 'application_of_registration_list').'/images/download_icon.png " title="Download Offer Letter" alt="PDF Icon">Uploaded Current Pay Slip',$current_pay_slip_url,array('html' => true));
 
 
 		}else{
